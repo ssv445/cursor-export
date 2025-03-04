@@ -1,11 +1,16 @@
 {
   "name": "cursor-export",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Export Cursor chat and composer history",
   "main": "index.js",
   "bin": {
     "cursor-export": "cli.js"
   },
+  "files": [
+    "index.js",
+    "cli.js", 
+    "github-markdown.css"
+  ],
   "scripts": {
     "dev": "node cli.js",
     "publish": "npm publish"

@@ -67,10 +67,17 @@ async function convertToHtml(markdown) {
 
         .markdown-body ul,
         .markdown-body ol {
-          margin-top: 0;
-          margin-bottom: 0;
-          padding-left: 2em;
+          margin-top: 0.5em !important;
+          margin-bottom: 0.5em !important;
+          padding-left: 2em !important;
+        }
+
+        .markdown-body ul{
           list-style-type: disc !important;
+        }
+
+        .markdown-body ol {
+          list-style-type: decimal !important;
         }
 
         @media (max-width: 767px) {

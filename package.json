@@ -1,6 +1,6 @@
 {
   "name": "cursor-export",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Export Cursor chat and composer history",
   "main": "index.js",
   "bin": {

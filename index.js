@@ -4,6 +4,55 @@ const { existsSync } = require('fs');
 const sqlite3 = require('sqlite3');
 const { open } = require('sqlite');
 
+const DEBUG = false;
+
+// Export chat history for all workspaces
+async function exportAllChatHistory () {
+
+  try {
+    let workspaces = await getAllWorkspaces();
+
+    const filterdWorkspaces = workspaces
+    // .filter((w) => {
+    //   if (w && w.folder) {
+    //     return w.folder.endsWith('dify')
+    //   }
+    //   return false;
+    // })
+
+    const allChats = [];
+
+    for (const workspace of filterdWorkspaces) {
+
+      try {
+        const detail = await getWorkspaceDetail(workspace.id, workspace.folder);
+
+        if (DEBUG) {
+          if (detail) {
+            await fs.writeFile('debug/detail.json', JSON.stringify(detail, null, 2));
+          }
+        }
+
+        allChats.push({
+          workspaceInfo: workspace,
+          chatData: detail
+        });
+      } catch (error) {
+        console.error(`Error getting details for workspace ${workspace.id}:`, error);
+      }
+    }
+
+    if (DEBUG) {
+      await fs.writeFile('debug/allChats.json', JSON.stringify(allChats, null, 2));
+    }
+
+    return allChats;
+  } catch (error) {
+    console.error('Failed to export chat history:', error);
+    throw error;
+  }
+}
+
 // Helper function to safely parse timestamps
 const safeParseTimestamp = (timestamp) => {
   try {
@@ -94,6 +143,11 @@ async function getWorkspaceDetail (workspaceId, workspaceFolder) {
     const workspacePath = process.env.WORKSPACE_PATH || '/Users/scott/Library/Application Support/Cursor/User/workspaceStorage';
     const dbPath = path.join(workspacePath, workspaceId, 'state.vscdb');
 
+    if (DEBUG) {
+      console.log('workspaceId', workspaceId);
+      console.log('dbPath', dbPath);
+    }
+
     const db = await open({
       filename: dbPath,
       driver: sqlite3.Database
@@ -103,6 +157,10 @@ async function getWorkspaceDetail (workspaceId, workspaceFolder) {
       SELECT value FROM ItemTable
       WHERE [key] = 'workbench.panel.aichat.view.aichat.chatdata'
     `);
+
+    if (DEBUG) {
+      console.log('chatResult', chatResult);
+    }
 
     const composerResult = await db.get(`
       SELECT value FROM ItemTable
@@ -132,6 +190,16 @@ async function getWorkspaceDetail (workspaceId, workspaceFolder) {
       }));
     }
 
+    if (DEBUG) {
+      if (chatResult) {
+        await fs.writeFile('debug/chatResult.json', chatResult.value, null, 2);
+      }
+
+      if (composerResult) {
+        await fs.writeFile('debug/composerResult.json', composerResult.value, null, 2);
+      }
+    }
+
     if (composerResult) {
       const globalDbPath = path.join(workspacePath, '..', 'globalStorage', 'state.vscdb');
       const composers = JSON.parse(composerResult.value);
@@ -159,46 +227,24 @@ async function getWorkspaceDetail (workspaceId, workspaceFolder) {
             composerId
           };
         });
+
+        if (DEBUG) {
+          await fs.writeFile('debug/allComposers.json', JSON.stringify(composerDetails, null, 2));
+        }
+
         response.composers = {
           allComposers: composerDetails
         };
       }
     }
 
+    if (DEBUG) {
+      await fs.writeFile('debug/response.json', JSON.stringify(response, null, 2));
+    }
+
     return response;
   } catch (error) {
     console.error('Failed to get workspace data:', error);
-    throw error;
-  }
-}
-
-// Export chat history for all workspaces
-async function exportAllChatHistory () {
-
-  try {
-    let workspaces = await getAllWorkspaces();
-
-    const filterdWorkspaces = workspaces
-
-    const allChats = [];
-
-    for (const workspace of filterdWorkspaces) {
-
-      try {
-        const detail = await getWorkspaceDetail(workspace.id, workspace.folder);
-
-        allChats.push({
-          workspaceInfo: workspace,
-          chatData: detail
-        });
-      } catch (error) {
-        console.error(`Error getting details for workspace ${workspace.id}:`, error);
-      }
-    }
-
-    return allChats;
-  } catch (error) {
-    console.error('Failed to export chat history:', error);
     throw error;
   }
 }

@@ -135,3 +135,6 @@ cursor-export-output/*
 
 demoData
 demoData/*
+
+debug
+debug/*

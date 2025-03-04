@@ -1,6 +1,7 @@
 const { marked } = require('marked');
 const fs = require('fs').promises;
 const { formatDateTime } = require('./formatters');
+const path = require('path');
 
 // Convert chat history to markdown format
 function convertToMarkdown(chatData, workspaceInfo) {
@@ -45,7 +46,7 @@ function convertToMarkdown(chatData, workspaceInfo) {
 // Convert markdown to HTML with GitHub styling
 async function convertToHtml(markdown) {
   const htmlContent = marked(markdown);
-  const cssPath = './github-markdown.css';
+  const cssPath = require.resolve('github-markdown-css/github-markdown.css');
   const css = await fs.readFile(cssPath, 'utf-8');
   
   return `<!DOCTYPE html>
@@ -63,6 +64,15 @@ async function convertToHtml(markdown) {
             margin: 0 auto;
             padding: 45px;
         }
+
+        .markdown-body ul,
+        .markdown-body ol {
+          margin-top: 0;
+          margin-bottom: 0;
+          padding-left: 2em;
+          list-style-type: disc !important;
+        }
+
         @media (max-width: 767px) {
             .markdown-body {
                 padding: 15px;

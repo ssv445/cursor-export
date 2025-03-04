@@ -9,7 +9,7 @@ importers:
   .:
     dependencies:
       github-markdown-css:
-        specifier: ^5.5.1
+        specifier: ^5.8.1
         version: 5.8.1
       marked:
         specifier: ^12.0.2

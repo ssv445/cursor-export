@@ -4,6 +4,8 @@ const yargs = require('yargs/yargs');
 const { hideBin } = require('yargs/helpers');
 const { exportAllChatHistory } = require('./index.js');
 const { exportAllWorkspaces } = require('./exportFiles/fileExporter');
+const path = require('path');
+const fs = require('fs');
 
 async function main () {
   const argv = yargs(hideBin(process.argv))
@@ -45,6 +47,32 @@ async function main () {
     console.error('Export failed:', error);
     process.exit(1);
   }
+}
+
+function getMarkdownCssPath() {
+  const possiblePaths = [
+    path.resolve(__dirname, 'github-markdown.css'),
+    path.join(__dirname, 'github-markdown.css'),
+    './github-markdown.css'
+  ];
+
+  for (const cssPath of possiblePaths) {
+    try {
+      if (fs.existsSync(cssPath)) {
+        return cssPath;
+      }
+    } catch (error) {
+      // 忽略不存在的路径
+    }
+  }
+
+  throw new Error('Cannot find github-markdown.css');
+}
+
+async function convertToHtml(markdown) {
+  const cssPath = getMarkdownCssPath();
+  const css = await fs.promises.readFile(cssPath, 'utf-8');
+  // ... 其余的转换逻辑保持不变
 }
 
 main(); 

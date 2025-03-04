@@ -9,7 +9,6 @@
   "files": [
     "index.js",
     "cli.js",
-    "github-markdown.css",
     "exportFiles"
   ],
   "scripts": {

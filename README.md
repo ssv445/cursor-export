@@ -19,10 +19,6 @@ npx cursor-export --workspacePath="/Users/scott/Library/Application Support/Curs
 
 - Export Cursor IDE chat history
 - Export Composer data
-- Custom workspace path support
-- Custom export file path support
-- JSON format output for easy processing
-- Comprehensive error handling and logging
 
 ## Usage
 

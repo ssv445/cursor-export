@@ -12,13 +12,14 @@ async function exportAllChatHistory () {
   try {
     let workspaces = await getAllWorkspaces();
 
-    const filterdWorkspaces = workspaces
-    // .filter((w) => {
-    //   if (w && w.folder) {
-    //     return w.folder.endsWith('dify')
-    //   }
-    //   return false;
-    // })
+    let filterdWorkspaces = DEBUG ? workspaces
+      .filter((w) => {
+        if (w && w.folder) {
+          return w.folder.endsWith('cursor-export')
+        }
+        return false;
+      })
+      : workspaces;
 
     const allChats = [];
 

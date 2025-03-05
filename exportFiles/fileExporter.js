@@ -90,7 +90,7 @@ async function exportChatTab (tab, workspace, workspaceName, outputDir, workspac
     title: tab.title,
     timestamp: tab.timestamp,
     conversation: tab.bubbles ? tab.bubbles.map(bubble => ({
-      role: bubble.type === 'ai' ? 'Cursor' : 'User',
+      role: bubble.type === 'ai' ? 'Cursor' : 'Assistant',
       text: bubble.text || '',
       codeBlocks: bubble.codeBlocks || []
     })) : []

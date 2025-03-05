@@ -11,14 +11,11 @@ npm install -g cursor-export
 Or run directly with npx:
 
 ```bash
+# Replace {scott} with your username
+
 npx cursor-export --workspacePath="/Users/scott/Library/Application Support/Cursor/User/workspaceStorage"
 
 ```
-
-## Main Features
-
-- Export Cursor IDE chat history
-- Export Composer data
 
 ## Usage
 
@@ -64,7 +61,7 @@ npm install
 npm install -g .
 
 # Run the tool locally
-npm start
+npm run dev
 ```
 
 ### Project Structure

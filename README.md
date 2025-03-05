@@ -96,3 +96,7 @@ set DEBUG=cursor-export:* && npm start
 ## License
 
 MIT
+
+## Inspired by cursor-chat-browser
+
+[cursor-chat-browser](https://github.com/thomas-pedersen/cursor-chat-browser)

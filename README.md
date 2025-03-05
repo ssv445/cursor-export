@@ -46,6 +46,10 @@ cursor-export-output/
       └── <workspace_name>.json
 ```
 
+Example html file:
+
+![](./images/2025-03-05-15-35-48.png)
+
 ## Quick Start
 
 ```bash

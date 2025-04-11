@@ -7,7 +7,7 @@ const { exportAllWorkspaces } = require('./exportFiles/fileExporter');
 const path = require('path');
 const fs = require('fs');
 
-async function main () {
+async function main() {
   const argv = yargs(hideBin(process.argv))
     .usage('Usage: $0 [options]')
     .option('workspacePath', {
@@ -22,13 +22,14 @@ async function main () {
 
   try {
     // Set workspace path from CLI argument
-    process.env.WORKSPACE_PATH = argv.workspacePath;
+    process.env.WORKSPACE_PATH = process.env.WORKSPACE_PATH || argv.workspacePath;
+    process.env.OUTPUT_PATH = process.env.OUTPUT_PATH || 'cursor-export-output';
 
     console.log('Starting export from:', argv.workspacePath);
     const chatHistory = await exportAllChatHistory();
 
     // Export all workspaces
-    await exportAllWorkspaces(chatHistory, 'cursor-export-output');
+    await exportAllWorkspaces(chatHistory, process.env.OUTPUT_PATH);
 
     console.log(`\nExport completed successfully!`);
     console.log(`Total workspaces processed: ${chatHistory.length}`);

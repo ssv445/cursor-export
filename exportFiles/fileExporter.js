@@ -3,7 +3,7 @@ const path = require('path');
 const { convertToMarkdown, convertToHtml } = require('./converters');
 const { getSafeFilename } = require('./formatters');
 
-async function createExportDirectories (outputDir) {
+async function createExportDirectories(outputDir) {
   // Create base output directory
   await fs.mkdir(outputDir, { recursive: true });
 
@@ -16,15 +16,25 @@ async function createExportDirectories (outputDir) {
   await fs.mkdir(path.join(outputDir, 'json'), { recursive: true });
 }
 
-async function exportWorkspace (workspace, outputDir) {
+function cleanVSCodeRemoteUrl(url) {
+  if (!url) return '';
+  const matches = url.match(/^(vscode-remote:\/\/dev-container)(.*?)\/([\w-]+)$/);
+  if (!matches) {
+    return path.basename(url);
+  }
+
+  // const encodedPart = matches[2].slice(0, -16); // Keep first 8 chars
+  return `zz_dev-container/${matches[3]}`.replace(/\//g, '_');
+}
+
+async function exportWorkspace(workspace, outputDir) {
   // Check if workspace has any data
   const hasChatTabs = workspace.chatData.tabs && workspace.chatData.tabs.length > 0;
   const hasComposers = workspace.chatData.composers && workspace.chatData.composers.allComposers && workspace.chatData.composers.allComposers.length > 0;
 
-
-  const workspaceName = workspace.workspaceInfo.folder
-    ? path.basename(workspace.workspaceInfo.folder)
-    : workspace.workspaceInfo.id;
+  //cleanup folder name, if it contains remove long alphanumeric strings
+  const folderStorageName = cleanVSCodeRemoteUrl(workspace.workspaceInfo.folder);
+  const workspaceName = folderStorageName ?? workspace.workspaceInfo.id;
 
   if (!hasChatTabs && !hasComposers) {
     console.log('Skipping empty workspace:', workspaceName);
@@ -70,7 +80,7 @@ async function exportWorkspace (workspace, outputDir) {
   return workspaceData;
 }
 
-async function exportChatTab (tab, workspace, workspaceName, outputDir, workspaceData) {
+async function exportChatTab(tab, workspace, workspaceName, outputDir, workspaceData) {
   const filename = getSafeFilename(tab.timestamp, tab.title);
 
   // Convert to markdown
@@ -97,7 +107,7 @@ async function exportChatTab (tab, workspace, workspaceName, outputDir, workspac
   });
 }
 
-async function exportComposer (composer, workspace, workspaceName, outputDir, workspaceData) {
+async function exportComposer(composer, workspace, workspaceName, outputDir, workspaceData) {
   // Skip empty composers
   if (!composer.text && (!composer.conversation || composer.conversation.length === 0)) {
     return;
@@ -144,7 +154,7 @@ async function exportComposer (composer, workspace, workspaceName, outputDir, wo
   });
 }
 
-async function exportAllWorkspaces (chatHistory, outputDir) {
+async function exportAllWorkspaces(chatHistory, outputDir) {
   await createExportDirectories(outputDir);
 
   const results = [];

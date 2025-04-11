@@ -12,7 +12,7 @@
     "exportFiles"
   ],
   "scripts": {
-    "dev": "node cli.js",
+    "dev": "WORKSPACE_PATH=\"/Users/shyam/Library/Application Support/Cursor/User/workspaceStorage\" OUTPUT_PATH=\"../cursor-export-output\" node cli.js ",
     "deploy": "npm publish"
   },
   "keywords": [
